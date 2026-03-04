@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base, Usuario, Animal, Veterinario, Consulta
+from models import Base, Usuario, Animal, Veterinario#, Consulta
 
 app = Flask(__name__)
 CORS(app)
@@ -81,8 +81,7 @@ def get_animais():
     s = Session()
     animais = s.query(Animal).all()
     return jsonify([{"id": a.id, "nome": a.nome, "especie": a.especie, "usuario_id": a.usuario_id} for a in animais])
-if __name__ == "__main__":
-    app.run(debug=True)
+
     
 
 #rotas veterinario
@@ -90,7 +89,7 @@ if __name__ == "__main__":
 @app.route('/veterinario', methods=["GET"])   
 def get_Veterinario():
     s = Session()
-    veterinario = s.quer(veterinario).all()
+    veterinario = s.query(Veterinario).all()
     return jsonify([{"id": u.id, "nome": u.nome, "email": u.email, "telefone": u.telefone} for u in veterinario])
   
 
@@ -114,7 +113,7 @@ def update_veterinario(id):
     s.commit()
     return jsonify({"message": "Veterinário atualizado!"})
 
-@app.route('/veterinario', methods=["POST"])
+@app.route("/veterinario", methods=["POST"])
 def add_veterinario():
     s= Session()
     data = request.json
