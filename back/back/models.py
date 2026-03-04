@@ -9,4 +9,12 @@ class Usuario(Base):
     id = Column(Integer, primary_key=True)
     nome = Column (String)
     email = Column (String)
+
+class Veterinário(Base):
+    __tablename__ = "Veterinários"
+    id = Column(Integer, primary_key=True)
+    nome = Column (String)
+    email = Column (String)
+    telefone = Column (String)
+
     
