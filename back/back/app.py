@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base, Usuario, Animais, Veterinario, Consulta
+from models import Base, Usuario, Animal, Veterinario, Consulta
 
 app = Flask(__name__)
 CORS(app)
@@ -38,14 +38,49 @@ def delete_usuario(id):
     s.commit()
     return jsonify({"message": "Usuário deletado!"})
 
-
-
 @app.route('/usuarios', methods=["GET"])
 def get_usuarios():
     s = Session()
     usuarios = s.query(Usuario).all()
     return jsonify([{"id": u.id, "nome": u.nome, "email": u.email} for u in usuarios])
 
+#rotas animais
+@app.route('/animais', methods=["POST"])
+def add_animais():
+    s= Session()
+    data = request.json
+    u = Animal(nome=data["nome"], especie=data["especie"], usuario_id=data["usuario_id"])
+    s.add(u)
+    s.commit()
+    return jsonify({"message": "Animal criado!"})
+
+@app.route("/animais/<int:id>", methods=["PUT"])
+def update_animais(id):
+    s = Session()
+    u = s.query(Animal).get(id)
+    data = request.json
+    u.nome = data["nome"]
+    u.especie = data["especie"]
+    s.commit()
+    return jsonify({"message": "Animal atualizado!"})
+
+
+
+@app.route("/animais/<int:id>", methods=["DELETE"])
+def delete_animais(id):
+    s = Session()
+    u = s.query(Animal).get(id)
+    s.delete(u)
+    s.commit()
+    return jsonify({"message": "Animal deletado!"})
+
+
+
+@app.route('/animais', methods=["GET"])
+def get_animais():
+    s = Session()
+    animais = s.query(Animal).all()
+    return jsonify([{"id": a.id, "nome": a.nome, "especie": a.especie, "usuario_id": a.usuario_id} for a in animais])
 if __name__ == "__main__":
     app.run(debug=True)
     
@@ -58,8 +93,7 @@ def get_Veterinario():
     veterinario = s.quer(veterinario).all()
     return jsonify([{"id": u.id, "nome": u.nome, "email": u.email, "telefone": u.telefone} for u in veterinario])
   
-if __name__ == "__main__":
-    app.run(debug=True)
+
 
 @app.route("/veterinario/<int:id>", methods=["DELETE"])
 def delete_veterinario(id):
@@ -88,3 +122,6 @@ def add_veterinario():
     s.add(u)
     s.commit()
     return jsonify({"message": "Veterinário criado"})
+
+if __name__ == "__main__":
+    app.run(debug=True)
