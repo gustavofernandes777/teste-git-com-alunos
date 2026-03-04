@@ -50,3 +50,41 @@ if __name__ == "__main__":
     app.run(debug=True)
     
 
+#rotas veterinario
+#  
+@app.route('/veterinario', methods=["GET"])   
+def get_Veterinario():
+    s = Session()
+    veterinario = s.quer(veterinario).all()
+    return jsonify([{"id": u.id, "nome": u.nome, "email": u.email, "telefone": u.telefone} for u in veterinario])
+  
+if __name__ == "__main__":
+    app.run(debug=True)
+
+@app.route("/veterinario/<int:id>", methods=["DELETE"])
+def delete_veterinario(id):
+    s = Session()
+    u = s.query(Veterinario).get(id)
+    s.delete(u)
+    s.commit()
+    return jsonify({"message": "Veterinário deletado!"})
+
+@app.route("/veterinário/<int:id>", methods=["PUT"])
+def update_veterinario(id):
+    s = Session()
+    u = s.query(Veterinario).get(id)
+    data = request.json
+    u.nome = data["nome"]
+    u.email = data["email"]
+    u.telefone = data["telefone"]
+    s.commit()
+    return jsonify({"message": "Veterinário atualizado!"})
+
+@app.route('/veterinario', methods=["POST"])
+def add_veterinario():
+    s= Session()
+    data = request.json
+    u = Veterinario(nome=data["nome"], email=data["email"], telefone=data["telefone"])
+    s.add(u)
+    s.commit()
+    return jsonify({"message": "Veterinário criado"})
