@@ -92,5 +92,3 @@ def add_veterinario():
 
 
 
-
-
